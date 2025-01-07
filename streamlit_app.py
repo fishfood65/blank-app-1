@@ -3,39 +3,62 @@ import pandas as pd
 import os
 
 # Title for the Streamlit app
-st.title("Save Text Input Example")
+st.title("Icon Click Input and Save")
 
-# Text input field
-user_input = st.text_area("Enter some text here:")
+# Display an icon using markdown with HTML
+st.markdown("""
+    <style>
+    .icon { font-size: 50px; cursor: pointer; }
+    </style>
+    <div class="icon" id="icon">&#9993;</div>  <!-- Envelope icon -->
+    <p>Click on the icon to enter your data.</p>
+""", unsafe_allow_html=True)
 
-# Button to save the input data
-if st.button("Save Data"):
-    # Check if the user has entered any text
-    if user_input:
-        # Prepare the data to save (here we store it as a DataFrame)
-        data = {"Input Data": [user_input]}
-        
-        # Check if the file exists
-        file_path = "user_input_data.csv"
-        
-        if os.path.exists(file_path):
-            # Append new data if the file already exists
-            df = pd.read_csv(file_path)
-            new_data = pd.DataFrame(data)
-            df = pd.concat([df, new_data], ignore_index=True)
-            df.to_csv(file_path, index=False)
+# Flag to track if the icon was clicked
+if 'icon_clicked' not in st.session_state:
+    st.session_state.icon_clicked = False
+
+# Function to handle icon click
+def handle_icon_click():
+    st.session_state.icon_clicked = True
+
+# Button for icon click
+if st.button("Click the icon to enter data"):
+    handle_icon_click()
+
+# Input field that appears after icon click
+if st.session_state.icon_clicked:
+    # Ask for user input after icon click
+    user_input = st.text_area("Enter your text here:")
+
+    # Button to submit and save the input data
+    if st.button("Save Data"):
+        # Check if the user has entered any text
+        if user_input:
+            # Prepare data for saving
+            data = {"Input Data": [user_input]}
+            
+            # Define file path
+            file_path = "user_input_data.csv"
+            
+            if os.path.exists(file_path):
+                # Append data to the existing file
+                df = pd.read_csv(file_path)
+                new_data = pd.DataFrame(data)
+                df = pd.concat([df, new_data], ignore_index=True)
+                df.to_csv(file_path, index=False)
+            else:
+                # Create a new CSV file and save the first input
+                df = pd.DataFrame(data)
+                df.to_csv(file_path, index=False)
+            
+            # Notify user
+            st.success("Data saved successfully!")
         else:
-            # Create a new CSV file and save the first input
-            df = pd.DataFrame(data)
-            df.to_csv(file_path, index=False)
-        
-        # Notify the user
-        st.success("Data saved successfully!")
-    else:
-        st.warning("Please enter some text before clicking 'Save Data'.")
+            st.warning("Please enter some text before clicking 'Save Data'.")
 
-# Display saved data (optional)
-if os.path.exists(file_path):
+# Optional: Display saved data
+if os.path.exists("user_input_data.csv"):
     st.subheader("Saved Data:")
-    saved_data = pd.read_csv(file_path)
+    saved_data = pd.read_csv("user_input_data.csv")
     st.write(saved_data)
