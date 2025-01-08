@@ -7,7 +7,7 @@ def set_state(i):
     st.session_state.stage = i
 
 if st.session_state.stage == 0:
-    st.button('Begin', on_click=set_state, args=[1])
+    st.button("🖼️ Click me", on_click=set_state, args=[1])
 
 if st.session_state.stage >= 1:
     name = st.text_input('Name', on_change=set_state, args=[2])
