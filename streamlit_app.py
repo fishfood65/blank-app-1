@@ -1,19 +1,24 @@
 import streamlit as st
 
-# Title of the app
-st.title("One Question Form")
+# Initialize session state to track whether the input has been entered
+if 'user_input' not in st.session_state:
+    st.session_state.user_input = ""
 
-# Create a form to collect the answer to a single question
-with st.form(key="question_form"):
-    # Display the question and text input box for the answer
-    answer = st.text_input("What is your favorite color?")
-    
-    # Submit button
-    submit_button = st.form_submit_button("Submit ✔️")  # Icon on the button
+# Display the clickable icon (using a button as an icon here)
+if 'clicked' not in st.session_state:
+    st.session_state.clicked = False
 
-# When the form is submitted, show the result
-if submit_button:
-    if answer:
-        st.write(f"Thank you for your submission! Your favorite color is: {answer}")
-    else:
-        st.write("You didn't provide an answer. Please try again!")
+# Display the clickable icon (emoji)
+if not st.session_state.clicked:
+    if st.button("🖼️ Click me"):
+        # When clicked, show text input box and hide the icon
+        st.session_state.clicked = True
+else:
+    # Show the text input box
+    user_input = st.text_input("Enter your text:")
+
+    # Once text is entered, hide the input box and show the check mark icon
+    if user_input:
+        st.session_state.user_input = user_input
+        st.write(f"✔️ You entered: {st.session_state.user_input}")
+        st.session_state.clicked = False  # Optionally reset to allow a new round
