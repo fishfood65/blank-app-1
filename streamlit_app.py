@@ -33,7 +33,7 @@ questions = [
 # Shuffle the questions to make the bingo board different every time
 random.shuffle(questions)
 
-# Function to create the bingo board
+# Function to create the bingo board with text inputs
 def create_bingo_board():
     # Create an empty board (5x5)
     bingo_board = [questions[i:i + 5] for i in range(0, 25, 5)]
@@ -44,8 +44,10 @@ def create_bingo_board():
         for j in range(5):
             question = bingo_board[i][j]
             with cols[j]:
-                # Use a checkbox to allow the user to answer the question (check if completed)
-                if st.checkbox(question, key=f"q{i}{j}"):
+                # Use a text input to capture the answer for each question
+                answer = st.text_input(question, key=f"q{i}{j}")
+                # Display whether the question has been answered
+                if answer:
                     st.write("✔️ Answered")
                 else:
                     st.write("❓ Not Answered")
@@ -53,7 +55,7 @@ def create_bingo_board():
 # Title and description
 st.title("Essential Dog Care Quiz - Bingo Board")
 st.write("Complete the bingo board by answering questions about your dog's care. "
-         "Click on the boxes to mark them as answered.")
+         "Enter your responses in the boxes below.")
 
 # Call the function to display the board
 create_bingo_board()
