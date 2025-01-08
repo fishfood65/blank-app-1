@@ -16,18 +16,18 @@ questions = [
 if 'questions' not in st.session_state:
     st.session_state.questions = questions
 
+# Initialize the session state for answers
+if 'answers' not in st.session_state:
+    st.session_state.answers = [['' for _ in range(5)] for _ in range(5)]
+
 # Function to create the bingo board with text inputs
 def create_bingo_board():
     # Create an empty board (5x5)
     bingo_board = [st.session_state.questions[i:i + 5] for i in range(0, 25, 5)]
-    
-    # Initialize session state for answers and completion tracking
-    if 'answers' not in st.session_state:
-        st.session_state.answers = [['' for _ in range(5)] for _ in range(5)]
-    
-    # Create the bingo board in a simple list format without grid styling
+
     bingo_completed = False
 
+    # Create the bingo board in a simple list format without grid styling
     for i in range(5):
         cols = st.columns(5)  # Create 5 columns for each row of the board
         for j in range(5):
@@ -38,21 +38,20 @@ def create_bingo_board():
                 # Store the answer in session state
                 if answer != st.session_state.answers[i][j]:
                     st.session_state.answers[i][j] = answer
-                
+
                 # Display whether the question has been answered
                 if answer:
                     st.write("✔️ Answered")
                 else:
                     st.write("❓ Not Answered")
-    
+
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
-    
+
     if bingo_completed:
         st.success("🎉 Bingo! You've completed a row, column, or diagonal!")
-
-    # Provide a download button to export answers to CSV
-    export_csv_button(st.session_state.answers)
+        # Show the download button after Bingo
+        export_csv_button()
 
 # Function to check for Bingo
 def check_bingo(answers):
@@ -74,7 +73,7 @@ def check_bingo(answers):
     return False
 
 # Function to export answers to CSV
-def export_csv_button(answers):
+def export_csv_button():
     # Prepare the CSV data
     output = io.StringIO()
     writer = csv.writer(output)
@@ -83,7 +82,7 @@ def export_csv_button(answers):
     writer.writerow(st.session_state.questions)
     
     # Write the answers
-    for row in answers:
+    for row in st.session_state.answers:
         writer.writerow(row)
     
     # Move to the beginning of the StringIO buffer
