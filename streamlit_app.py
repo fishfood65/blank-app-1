@@ -23,67 +23,26 @@ def create_bingo_board():
     if 'answers' not in st.session_state:
         st.session_state.answers = [['' for _ in range(5)] for _ in range(5)]
     
-    # HTML grid layout with a grid-template
-    html_grid_layout = """
-    <style>
-    .bingo-board {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 10px;
-        padding: 10px;
-    }
-    .bingo-board div {
-        border: 1px solid #ccc;
-        padding: 20px;
-        font-size: 16px;
-        text-align: center;
-        height: 120px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .task-text {
-        margin-bottom: 10px;
-        font-weight: bold;
-    }
-    .input-container {
-        display: flex;
-        justify-content: center;
-    }
-    </style>
-    """
-    
-    # Display HTML grid layout
-    st.markdown(html_grid_layout, unsafe_allow_html=True)
-
-    # Initialize a variable to check for Bingo completion
+    # Create the bingo board in a simple list format without grid styling
     bingo_completed = False
 
-    # Create the bingo grid in HTML using div elements
-    bingo_board_html = '<div class="bingo-board">'
-
     for i in range(5):
+        cols = st.columns(5)  # Create 5 columns for each row of the board
         for j in range(5):
             question = bingo_board[i][j]
-            answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
-            
-            # Store the answer in session state
-            if answer != st.session_state.answers[i][j]:
-                st.session_state.answers[i][j] = answer
-            
-            # Append the HTML for each cell in the grid
-            bingo_board_html += f'''
-            <div>
-                <div class="task-text">{question}</div>
-                <div class="input-container">{answer}</div>
-            </div>
-            '''
-
-    bingo_board_html += '</div>'
-
-    # Display the HTML grid layout
-    st.markdown(bingo_board_html, unsafe_allow_html=True)
-
+            with cols[j]:
+                # Use a text input to capture the answer for each question
+                answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
+                # Store the answer in session state
+                if answer != st.session_state.answers[i][j]:
+                    st.session_state.answers[i][j] = answer
+                
+                # Display whether the question has been answered
+                if answer:
+                    st.write("✔️ Answered")
+                else:
+                    st.write("❓ Not Answered")
+    
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
     
