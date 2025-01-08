@@ -38,19 +38,53 @@ def create_bingo_board():
     # Create an empty board (5x5)
     bingo_board = [questions[i:i + 5] for i in range(0, 25, 5)]
     
-    # Display the bingo board
+    # Initialize session state for answers and completion tracking
+    if 'answers' not in st.session_state:
+        st.session_state.answers = [['' for _ in range(5)] for _ in range(5)]
+    
+    # Display the bingo board with text inputs
+    bingo_completed = False
     for i in range(5):
         cols = st.columns(5)
         for j in range(5):
             question = bingo_board[i][j]
             with cols[j]:
                 # Use a text input to capture the answer for each question
-                answer = st.text_input(question, key=f"q{i}{j}")
+                answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
+                # Store the answer in session state
+                if answer != st.session_state.answers[i][j]:
+                    st.session_state.answers[i][j] = answer
+                
                 # Display whether the question has been answered
                 if answer:
                     st.write("✔️ Answered")
                 else:
                     st.write("❓ Not Answered")
+    
+    # After each user input, check for Bingo (row, column, or diagonal completion)
+    bingo_completed = check_bingo(st.session_state.answers)
+    
+    if bingo_completed:
+        st.success("🎉 Bingo! You've completed a row, column, or diagonal!")
+    
+# Function to check for Bingo
+def check_bingo(answers):
+    # Check rows and columns for completeness
+    for i in range(5):
+        # Check row i
+        if all(answers[i][j] != '' for j in range(5)):
+            return True
+        # Check column j
+        if all(answers[j][i] != '' for j in range(5)):
+            return True
+    
+    # Check diagonals
+    if all(answers[i][i] != '' for i in range(5)):
+        return True
+    if all(answers[i][4-i] != '' for i in range(5)):
+        return True
+    
+    return False
 
 # Title and description
 st.title("Essential Dog Care Quiz - Bingo Board")
