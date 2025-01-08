@@ -1,24 +1,27 @@
 import streamlit as st
 
-# Initialize session state to track whether the input has been entered
-if 'user_input' not in st.session_state:
-    st.session_state.user_input = ""
+if 'stage' not in st.session_state:
+    st.session_state.stage = 0
 
-# Display the clickable icon (using a button as an icon here)
-if 'clicked' not in st.session_state:
-    st.session_state.clicked = False
+def set_state(i):
+    st.session_state.stage = i
 
-# Display the clickable icon (emoji)
-if not st.session_state.clicked:
-    if st.button("🖼️ Click me"):
-        # When clicked, show text input box and hide the icon
-        st.session_state.clicked = True
-else:
-    # Show the text input box
-    user_input = st.text_input("Enter your text:")
+if st.session_state.stage == 0:
+    st.button('Begin', on_click=set_state, args=[1])
 
-    # Once text is entered, hide the input box and show the check mark icon
-    if user_input:
-        st.session_state.user_input = user_input
-        st.write(f"✔️ You entered: {st.session_state.user_input}")
-        st.session_state.clicked = False  # Optionally reset to allow a new round
+if st.session_state.stage >= 1:
+    name = st.text_input('Name', on_change=set_state, args=[2])
+
+if st.session_state.stage >= 2:
+    st.write(f'Hello {name}!')
+    color = st.selectbox(
+        'Pick a Color',
+        [None, 'red', 'orange', 'green', 'blue', 'violet'],
+        on_change=set_state, args=[3]
+    )
+    if color is None:
+        set_state(2)
+
+if st.session_state.stage >= 3:
+    st.write(f':{color}[Thank you!]')
+    st.button('Start Over', on_click=set_state, args=[0])
