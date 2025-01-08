@@ -1,78 +1,59 @@
 import streamlit as st
-import pandas as pd
+import random
 
-# Initialize session state to track stages and data
-if 'stage' not in st.session_state:
-    st.session_state.stage = 0
-if 'user_name' not in st.session_state:
-    st.session_state.user_name = ""
-if 'name_submitted' not in st.session_state:
-    st.session_state.name_submitted = False
+# List of all questions (you can extend this list with more if needed)
+questions = [
+    "What is your dog’s name?", "What breed is your dog?", "How old is your dog?", 
+    "What is your dog’s weight?", "What color is your dog?", "Does your dog have a microchip?", 
+    "Is your dog spayed or neutered?", "When and where did you adopt your dog?",
+    "Who is your dog's veterinarian?", "What is your vet’s phone number?", 
+    "What is the address of your vet’s office?", "Do you have an emergency vet contact?", 
+    "Does your dog have any medical conditions or allergies?", "Does your dog take any medications?", 
+    "When was your dog last vaccinated?", "When is your dog due for their next vaccination?", 
+    "What brand/type of food does your dog eat?", "What is the portion size for each meal?", 
+    "How many times a day does your dog eat?", "Does your dog eat any treats or snacks?", 
+    "How often do you refill your dog’s water bowl?", "What is your dog’s usual walk routine?", 
+    "What are your dog’s favorite walk locations?", "What type of walking equipment do you use?", 
+    "Does your dog pull on the leash?", "Is your dog calm during walks?", 
+    "Does your dog get distracted easily during walks?", "Does your dog have any walking-related issues?", 
+    "How often do you bathe your dog?", "How often do you brush your dog?", "How often do you trim your dog’s nails?", 
+    "How often do you clean your dog’s ears?", "Do you brush your dog’s teeth?", 
+    "Does your dog need any special grooming care?", "What are your dog’s favorite toys or activities?", 
+    "What are your dog’s fears or anxiety triggers?", "What commands does your dog know?", 
+    "Does your dog have any behavioral issues?", "Is your dog good with other dogs?", 
+    "Is your dog good with children?", "Is your dog good with strangers?", "What training goals are you working on?", 
+    "What progress or challenges have you encountered in training?", "What methods are you using for training?", 
+    "Does your dog see a trainer or attend any obedience classes?", "What is your dog’s daily routine?", 
+    "Does your dog travel with you?", "Does your dog get car sick?", "Do you have a pet sitter or dog walker?", 
+    "Does your dog need special instructions for sitters/walkers?", "Who are your emergency contacts?", 
+    "What is your vet's emergency contact info?", "What is the contact info for your local pet poison control hotline?", 
+    "What are your dog’s favorite toys or items?", "Are there any important dates related to your dog?"
+]
 
-# Callback to advance to the next stage
-def advance_stage():
-    if st.session_state.stage < 3:
-        st.session_state.stage += 1
+# Shuffle the questions to make the bingo board different every time
+random.shuffle(questions)
 
-# Callback to reset the flow to stage 0
-def reset_stage():
-    st.session_state.stage = 0
-    st.session_state.user_name = ""
-    st.session_state.name_submitted = False
+# Function to create the bingo board
+def create_bingo_board():
+    # Create an empty board (5x5)
+    bingo_board = [questions[i:i + 5] for i in range(0, 25, 5)]
+    
+    # Display the bingo board
+    for i in range(5):
+        cols = st.columns(5)
+        for j in range(5):
+            question = bingo_board[i][j]
+            with cols[j]:
+                # Use a checkbox to allow the user to answer the question (check if completed)
+                if st.checkbox(question, key=f"q{i}{j}"):
+                    st.write("✔️ Answered")
+                else:
+                    st.write("❓ Not Answered")
 
-# The function that handles the stages
-def handle_form():
-    # Stage 0: Before the user begins
-    if st.session_state.stage == 0:
-        st.write("Click the button below to start.")
-        if st.button("Start"):
-            advance_stage()  # Advance to stage 1
+# Title and description
+st.title("Essential Dog Care Quiz - Bingo Board")
+st.write("Complete the bingo board by answering questions about your dog's care. "
+         "Click on the boxes to mark them as answered.")
 
-    # Stage 1: User enters their name
-    elif st.session_state.stage == 1:
-        st.write("Enter your name:")
-        if not st.session_state.name_submitted:
-            user_name = st.text_input("What is your name?", key="name_input")
-            submit_button = st.button("Submit")
-            
-            # Once the user submits their name, store it and prevent further edits
-            if submit_button and user_name:
-                st.session_state.user_name = user_name
-                st.session_state.name_submitted = True
-                advance_stage()  # Move to stage 2
-            elif submit_button and not user_name:
-                st.warning("Please enter your name!")
-        else:
-            # If name is submitted, show the name and disable further input
-            st.write(f"Your name is {st.session_state.user_name}. You cannot change it.")
-            advance_stage()  # Automatically move to stage 2
-
-    # Stage 2: Thank you message
-    elif st.session_state.stage == 2:
-        st.write(f"Thank you, {st.session_state.user_name}!")
-        st.write("We appreciate your submission.")
-        advance_stage()  # Automatically move to stage 3
-
-    # Stage 3: Reset button
-    elif st.session_state.stage == 3:
-        st.write(f"Thank you for participating, {st.session_state.user_name}!")
-        if st.button("Reset Process"):
-            reset_stage()  # Reset everything and go back to stage 0
-
-# Example usage within a grid layout
-def display_grid_with_forms():
-    # Create a dummy DataFrame for demonstration
-    data = {'ID': [1, 2, 3], 'Name': ['Alice', 'Bob', 'Charlie']}
-    df = pd.DataFrame(data)
-
-    # Create a grid layout with columns
-    cols = st.columns(3)  # Create 3 columns, you can adjust the number of columns based on your needs
-
-    # Display the table and forms in grid layout
-    for index, row in df.iterrows():
-        with cols[index % 3]:  # Use modulo for grid wrapping
-            st.write(f"Row {index + 1}: {row['Name']}")
-            handle_form()  # Call the form handler for each row
-
-# Run the grid display function
-display_grid_with_forms()
+# Call the function to display the board
+create_bingo_board()
