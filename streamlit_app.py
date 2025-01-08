@@ -1,28 +1,18 @@
 import streamlit as st
 
-def display_input_row(index):
-    left, middle, right = st.columns(3)
-    left.text_input('First', key=f'first_{index}')
-    middle.text_input('Middle', key=f'middle_{index}')
-    right.text_input('Last', key=f'last_{index}')
+if 'stage' not in st.session_state:
+    st.session_state.stage = 0
 
-if 'rows' not in st.session_state:
-    st.session_state['rows'] = 0
+def set_state(i):
+    st.session_state.stage = i
 
-def increase_rows():
-    st.session_state['rows'] += 1
+if st.session_state.stage == 0:
+    st.button("🖼️ Click me", on_click=set_state, args=[1])
 
-st.button('Add person', on_click=increase_rows)
+if st.session_state.stage >= 1:
+    name = st.text_input('Name')
+    st.button('Submit', on_click=set_state, args=[2])
 
-for i in range(st.session_state['rows']):
-    display_input_row(i)
-
-# Show the results
-st.subheader('People')
-for i in range(st.session_state['rows']):
-    st.write(
-        f'Person {i+1}:',
-        st.session_state[f'first_{i}'],
-        st.session_state[f'middle_{i}'],
-        st.session_state[f'last_{i}']
-    )
+if st.session_state.stage >= 2:
+    st.write(f"✔️ You entered: {name}")
+    st.button('Start Over', on_click=set_state, args=[0])
