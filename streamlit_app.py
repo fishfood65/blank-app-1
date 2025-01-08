@@ -11,6 +11,7 @@ if st.session_state.stage == 0:
 
 if st.session_state.stage >= 1:
     name = st.text_input('Name', on_change=set_state, args=[2])
+    st.button('Submit', on_click=set_state, args=[2])
 
 if st.session_state.stage >= 2:
     st.write(f"✔️ You entered: {name}")
