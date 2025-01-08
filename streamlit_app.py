@@ -1,4 +1,6 @@
 import streamlit as st
+import csv
+import io
 
 # List of questions (questions or actions) with icons
 questions = [
@@ -49,6 +51,9 @@ def create_bingo_board():
     if bingo_completed:
         st.success("🎉 Bingo! You've completed a row, column, or diagonal!")
 
+    # Provide a download button to export answers to CSV
+    export_csv_button(st.session_state.answers)
+
 # Function to check for Bingo
 def check_bingo(answers):
     # Check rows and columns for completeness
@@ -67,6 +72,30 @@ def check_bingo(answers):
         return True
     
     return False
+
+# Function to export answers to CSV
+def export_csv_button(answers):
+    # Prepare the CSV data
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write the header (questions)
+    writer.writerow(st.session_state.questions)
+    
+    # Write the answers
+    for row in answers:
+        writer.writerow(row)
+    
+    # Move to the beginning of the StringIO buffer
+    output.seek(0)
+    
+    # Create a download button
+    st.download_button(
+        label="Download Answers as CSV",
+        data=output.getvalue(),
+        file_name="dog_care_bingo_answers.csv",
+        mime="text/csv"
+    )
 
 # Title and description
 st.title("Essential Dog Care Quiz - Bingo Board")
