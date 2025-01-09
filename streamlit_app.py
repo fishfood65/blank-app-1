@@ -2,14 +2,20 @@ import streamlit as st
 import csv
 import io
 
-# List of questions (questions or actions) with icons
+# List of updated questions
 questions = [
-    "🐾 Task", "🐾 Task", "🐾 Task", "🐾 Task", "🐾 Task",
-    "🐕 Dog's Name", "🏥 Vet Contact Info", "🐾 Favorite Walk Locations", "🧳 Emergency Vet Contact", "🍖 Feeding Schedule",
-    "🦴 Medical Conditions/Allergies", "🧼 Grooming Schedule", "🐕 Commands Known", "🐕 Behavioral Issues", "🚶‍♂️ Walk Routine",
-    "🍏 Favorite Treats", "🐾 Special Training Notes", "🐕 Daily Routine", "🐶 Dog’s Birthdate", "🐶 Health & Vaccination History",
-    "💧 Water Bowl Refill Frequency", "🐕 Socialization with Other Dogs", "🐕 Behavioral Goals", "🧸 Favorite Toys", "🏠 Pet Sitter Contact Info",
-    "📅 Next Vet Appointment", "🎾 Exercise & Playtime Preferences", "💊 Medication Schedule", "🐕 Dog’s Weight", "📞 Emergency Contact 1"
+    "🐾 Basic Info", "🐾 Health and Medical", "🐾 Feeding Schedule", "🐾 Routine, Exercise and Walks", "🐾 Grooming and Hygiene",
+    "🐾 Behavioral Notes", "🐾 Training Notes and Special Care", "🐕 Dog's Name", "🏥 Vet Contact Info (Name, Phone Number, Address)", "🥣 Describe the brand/type of food your dog eats",
+    "🧳 Walk Routine (Time, Duration, Location, Behavior)", "🛁 Bathing Schedule", "🧸 Favorite Toys", "🎯 Current Training Goals", "🦴 Name the Breed",
+    "⛑️ Emergency Vet Contact Info (Name, Phone Number, Address)", "🍖 Describe the portion size for each meal", "📍 Favorite Walk Location", "💈 Brushing Schedule", "🐶 Play Styles",
+    "🥁 Training Progress/Challenges", "🎂 Dog’s Age and Weight", "💊 List all medical conditions or allergies", "🕥 Feeding Schedule", "🐶 Walking Equipment",
+    "💅 Nail Trimming", "🎾 Favorite Activities", "📚 Training Methods", "🔖 Dog’s microchip number", "🕥 Medication Schedule with Dosage",
+    "🍗 Name your dog’s treats or snacks", "🐾 Walk Behavior", "👂 Ear Cleaning", "❗ Fear/Anxiety Triggers", "🏫 Trainer Contact (Name, Phone, Email)",
+    "🖼️ Describe the Dog’s Appearance from Memory", "💊 Medication Delivery Instructions", "🕥 How often do you give your dog treats or snacks", "🍭 Treats for Walk", "🦷 Teeth Brushing",
+    "📢 Commands Known", "🌴 Travel carte or car travel setup", "✂️ Dog is Spayed or Neutered", "🗄️ Health & Vaccination History", "💧 Water bowl refill schedule",
+    "💤 Sleep Schedule", "🌟 Special Grooming Needs", "🔍 Behavioral Issues", "🚗 Car Sickness?", "🏘️ Place and date the Dog was adopted",
+    "📆 Date of Dog’s next check-up or vaccination", "Bonus: Special Instructions for Sitters/Walkers", "🎾 Special Activities or Playtimes", "🚶‍♂️ Bonus: Pet Walker Contact Info",
+    "🐶 Socialization with other dogs, children, and strangers", "🏠 Bonus: Pet Sitter Contact Info"
 ]
 
 # Store the questions in session state only once
@@ -23,7 +29,7 @@ if 'answers' not in st.session_state:
 # Function to create the bingo board with text inputs
 def create_bingo_board():
     # Create an empty board (5x5)
-    bingo_board = [st.session_state.questions[i:i + 5] for i in range(0, 25, 5)]
+    bingo_board = [st.session_state.questions[i:i + 5] for i in range(0, 50, 5)]  # Update to handle 50 questions
 
     bingo_completed = False
 
@@ -34,7 +40,7 @@ def create_bingo_board():
             st.write(f"**{bingo_board[0][j]}**")  # Display question as header, no input field
 
     # Now create the remaining rows with input fields
-    for i in range(1, 5):  # Start from row 1 (the second row, since row 0 is the header)
+    for i in range(1, 10):  # Start from row 1 (the second row, since row 0 is the header)
         cols = st.columns(5)  # Create 5 columns for each row of the board
         for j in range(5):
             question = bingo_board[i][j]
@@ -83,12 +89,12 @@ def export_csv_button():
     # Prepare the CSV data
     output = io.StringIO()
     writer = csv.writer(output)
-
+    
     # Write the header row (questions as the first column)
     writer.writerow(["Question", "Answer"])
-
+    
     # Write each question and its corresponding answer in the rows
-    for i in range(5):  # 5 rows
+    for i in range(10):  # Update to 10 rows (because we have 50 questions in total)
         for j in range(5):  # 5 columns
             question = st.session_state.questions[i * 5 + j]  # Get the correct question from the list
             answer = st.session_state.answers[i][j]  # Get the corresponding answer
