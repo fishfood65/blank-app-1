@@ -38,15 +38,16 @@ def create_bingo_board():
         row = []
         for j in range(7):  # 7 columns in each row
             question = bingo_board[i][j]  # Get the question for this cell
-            # Use a text input to capture the answer for each question
-            answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
-            
-            # Store the answer in session state if it changes
-            if answer != st.session_state.answers[i][j]:
-                st.session_state.answers[i][j] = answer
-            
-            # Append the answer to the row
-            row.append(answer)
+            # Create a label showing the question and a text input to capture the answer
+            with st.beta_expander(question, expanded=False):  # Makes it collapsible
+                answer = st.text_input("Your Answer", key=f"q{i}{j}", value=st.session_state.answers[i][j])
+                
+                # Store the answer in session state if it changes
+                if answer != st.session_state.answers[i][j]:
+                    st.session_state.answers[i][j] = answer
+                
+                # Append the answer to the row (for creating the table later)
+                row.append(f"{question}: {answer}")
         table_data.append(row)
 
     # Create a Pandas DataFrame to display the bingo board as a table
@@ -55,69 +56,4 @@ def create_bingo_board():
     # Display the table
     st.write("### Bingo Board", df_bingo)
 
-    # After each user input, check for Bingo (row, column, or diagonal completion)
-    bingo_completed = check_bingo(st.session_state.answers)
-
-    if bingo_completed:
-        st.success("🎉 Bingo! You've completed a row, column, or diagonal!")
-        # Show the download button after Bingo
-        export_csv_button()
-
-# Function to check for Bingo
-def check_bingo(answers):
-    # Check rows for completeness (7 rows, 7 columns)
-    for i in range(7):  # 7 rows
-        if all(answers[i][j] != '' for j in range(7)):  # 7 columns
-            return True
-
-    # Check columns for completeness (7 columns, 7 rows)
-    for i in range(7):  # 7 columns
-        if all(answers[j][i] != '' for j in range(7)):  # 7 rows
-            return True
-    
-    # Check diagonals for completeness
-    # Diagonal from top-left to bottom-right
-    if all(answers[i][i] != '' for i in range(7)):  # 7 diagonal elements
-        return True
-    # Diagonal from top-right to bottom-left
-    if all(answers[i][6-i] != '' for i in range(7)):  # 7 diagonal elements
-        return True
-    
-    return False
-
-# Function to export answers to CSV with questions and corresponding answers
-def export_csv_button():
-    # Prepare the CSV data
-    output = io.StringIO()
-    writer = csv.writer(output)
-    
-    # Write the header row (questions as the first column)
-    writer.writerow(["Question", "Answer"])
-    
-    # Write each question and its corresponding answer
-    for i in range(7):  # Iterate over rows 0 to 6 (7 rows)
-        for j in range(7):  # Iterate over columns 0 to 6 (7 columns)
-            question = st.session_state.questions[i * 7 + j]  # Get the correct question from the list
-            answer = st.session_state.answers[i][j]  # Get the corresponding answer
-            
-            # Write the question and its corresponding answer
-            writer.writerow([question, answer])
-    
-    # Move to the beginning of the StringIO buffer
-    output.seek(0)
-    
-    # Create a download button
-    st.download_button(
-        label="Download Answers as CSV",
-        data=output.getvalue(),
-        file_name="dog_care_bingo_answers.csv",
-        mime="text/csv"
-    )
-
-# Title and description
-st.title("Essential Dog Care Quiz - Bingo Board")
-st.write("Complete the bingo board by answering questions about your dog's care. "
-         "Enter your responses in the boxes below.")
-
-# Call the function to display the board
-create_bingo_board()
+    # After each user input, check for Bingo (row, colum
