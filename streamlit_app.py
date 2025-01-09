@@ -53,7 +53,8 @@ def create_bingo_board():
                         "Answer Here", 
                         key=f"q{col_index}{row_index}", 
                         value=answer,
-                        placeholder="Enter your answer here"
+                        placeholder="Enter your answer here",
+                        label_visibility="collapsed"
                     )
 
                     # Store the answer in session state if it changes
