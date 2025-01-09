@@ -45,7 +45,7 @@ def create_bingo_board():
                 # Create an expander with the question as the label
                 with st.expander(question):  # Use the question as the expander label
                     # Display the question and allow the user to input the answer
-                    answer = st.text_input(key=f"q{col_index}{row_index}", value=st.session_state.answers[row_index][col_index])
+                    answer = st.text_input(value=st.session_state.answers[row_index][col_index])
                     # Store the answer in session state if it changes
                     if answer != st.session_state.answers[row_index][col_index]:
                         st.session_state.answers[row_index][col_index] = answer
