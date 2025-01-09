@@ -84,10 +84,7 @@ def export_csv_button():
     output = io.StringIO()
     writer = csv.writer(output)
     
-    # Write the header (questions)
-    writer.writerow(st.session_state.questions)
-    
-    # Write the answers
+    # Write the answers only (without the header row)
     for row in st.session_state.answers:
         writer.writerow(row)
     
