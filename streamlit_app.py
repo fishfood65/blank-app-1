@@ -42,7 +42,7 @@ def create_bingo_board():
             # Each column will contain one question from each row in that column
             with col:
                 # Create a container for each column to control layout
-                with st.container(height=120):
+                with st.container():
                     for row_index in range(7):
                         question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
                         answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
