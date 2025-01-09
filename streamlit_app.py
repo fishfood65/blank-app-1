@@ -44,10 +44,10 @@ def create_bingo_board():
                 answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
 
                 # Determine the status based on whether the answer is provided
-                answer_status = "✔️ Answered" if answer else "❓ Not Answered"
+                answer_status = "✔️" if answer else "❓"
 
                 # Create an expander with the question as the label
-                with st.expander(f"{question} - {answer_status}"):  # Use the question and answer status as the expander label
+                with st.expander(f"{answer_status} - {question}"):  # Use the question and answer status as the expander label
                     # Display the question and allow the user to input the answer
                     answer_input = st.text_input(
                         "Answer Here", 
