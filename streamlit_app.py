@@ -29,7 +29,11 @@ if 'answers' not in st.session_state:
     st.session_state.answers = [['' for _ in range(7)] for _ in range(7)]  # 7 rows x 7 columns
 
 # Function to create the bingo board with text inputs
- # Loop through each column (7 total)
+ def create_bingo_board():
+    # Create an empty board (7x7) from the questions list
+    bingo_board = [questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
+
+    # Loop through each column (7 total)
     for i in range(7):
         with st.expander(f"Column {i+1} - Expand to Answer"):  # Create an expander for each column
             # Loop through each row in this column
@@ -46,7 +50,7 @@ if 'answers' not in st.session_state:
                     st.write("✔️ Answered")
                 else:
                     st.write("❓ Not Answered")
-                    
+
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
 
