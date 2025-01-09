@@ -2,15 +2,22 @@ import streamlit as st
 import csv
 import io
 
-# List of updated questions (remove the first 7 questions, starting from the 8th question)
+# List of updated questions
 questions = [
-    "🐕 Dog's Name", "🏥 Vet Contact Info (Name, Phone Number, Address)", "🥣 Describe the brand/type of food your dog eats", "🧳 Walk Routine (Time, Duration, Location, Behavior)", "🛁 Bathing Schedule", "🧸 Favorite Toys", "🎯 Current Training Goals",
-    "🦴 Name the Breed", "⛑️ Emergency Vet Contact Info (Name, Phone Number, Address)", "🍖 Describe the portion size for each meal", "📍 Favorite Walk Location", "💈 Brushing Schedule", "🐶 Play Styles", "🥁 Training Progress/Challenges",
-    "🎂 Dog’s Age and Weight", "💊 List all medical conditions or allergies", "🕥 Feeding Schedule", "🐶 Walking Equipment", "💅 Nail Trimming", "🎾 Favorite Activities", "📚 Training Methods", "🔖 Dog’s microchip number", "🕥 Medication Schedule with Dosage",
-    "🍗 Name your dog’s treats or snacks", "🐾 Walk Behavior", "👂 Ear Cleaning", "❗ Fear/Anxiety Triggers", "🏫 Trainer Contact (Name, Phone, Email)", "🖼️ Describe the Dog’s Appearance from Memory", "💊 Medication Delivery Instructions", "🕥 How often do you give your dog treats or snacks",
-    "🍭 Treats for Walk", "🦷 Teeth Brushing", "📢 Commands Known", "🌴 Travel carte or car travel setup", "✂️ Dog is Spayed or Neutered", "🗄️ Health & Vaccination History", "💧 Water bowl refill schedule", "💤 Sleep Schedule", "🌟 Special Grooming Needs",
-    "🔍 Behavioral Issues", "🚗 Car Sickness?", "🏘️ Place and date the Dog was adopted", "📆 Date of Dog’s next check-up or vaccination", "Bonus: Special Instructions for Sitters/Walkers", "🎾 Special Activities or Playtimes", "🚶‍♂️ Bonus: Pet Walker Contact Info",
-    "🐶 Socialization with other dogs, children, and strangers", "🏠 Bonus: Pet Sitter Contact Info"
+    "🐕 Dog's Name", "🏥 Vet Contact Info (Name, Phone Number, Address)", "🥣 Describe the brand/type of food your dog eats", 
+    "🧳 Walk Routine (Time, Duration, Location, Behavior)", "🛁 Bathing Schedule", "🧸 Favorite Toys", "🎯 Current Training Goals",
+    "🦴 Name the Breed", "⛑️ Emergency Vet Contact Info (Name, Phone Number, Address)", "🍖 Describe the portion size for each meal", 
+    "📍 Favorite Walk Location", "💈 Brushing Schedule", "🐶 Play Styles", "🥁 Training Progress/Challenges",
+    "🎂 Dog’s Age and Weight", "💊 List all medical conditions or allergies", "🕥 Feeding Schedule", "🐶 Walking Equipment", 
+    "💅 Nail Trimming", "🎾 Favorite Activities", "📚 Training Methods", "🔖 Dog’s microchip number", "🕥 Medication Schedule with Dosage",
+    "🍗 Name your dog’s treats or snacks", "🐾 Walk Behavior", "👂 Ear Cleaning", "❗ Fear/Anxiety Triggers", 
+    "🏫 Trainer Contact (Name, Phone, Email)", "🖼️ Describe the Dog’s Appearance from Memory", "💊 Medication Delivery Instructions", 
+    "🕥 How often do you give your dog treats or snacks", "🍭 Treats for Walk", "🦷 Teeth Brushing", "📢 Commands Known", 
+    "🌴 Travel carte or car travel setup", "✂️ Dog is Spayed or Neutered", "🗄️ Health & Vaccination History", "💧 Water bowl refill schedule", 
+    "💤 Sleep Schedule", "🌟 Special Grooming Needs", "🔍 Behavioral Issues", "🚗 Car Sickness?", 
+    "🏘️ Place and date the Dog was adopted", "📆 Date of Dog’s next check-up or vaccination", "Bonus: Special Instructions for Sitters/Walkers", 
+    "🎾 Special Activities or Playtimes", "🚶‍♂️ Bonus: Pet Walker Contact Info", "🐶 Socialization with other dogs, children, and strangers", 
+    "🏠 Bonus: Pet Sitter Contact Info"
 ]
 
 # Store the questions in session state only once
@@ -26,23 +33,64 @@ def create_bingo_board():
     # Create an empty board (7x7)
     bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
-    # Create the bingo grid
-    for i in range(7):  # 7 rows
-        cols = st.columns(7)  # Create 7 columns for each row
-        for j in range(7):  # 7 columns in each row
-            question = bingo_board[i][j]  # Get the question for this cell
-            with cols[j]:
-                # Use a text input to capture the answer for each question
-                answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
-                # Store the answer in session state if it changes
-                if answer != st.session_state.answers[i][j]:
-                    st.session_state.answers[i][j] = answer
+    # Adding custom CSS for grid layout and styling
+    st.markdown("""
+        <style>
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            border: 2px solid #000;
+            padding: 10px;
+        }
+        .bingo-cell {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .bingo-cell input {
+            width: 100%;
+        }
+        .bingo-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            background-color: #2e3b4e;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+        }
+        .bingo-header div {
+            padding: 5px;
+            text-align: center;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
-                # Display whether the question has been answered
-                if answer:
-                    st.write("✔️ Answered")
-                else:
-                    st.write("❓ Not Answered")
+    # Create the bingo grid with a header row
+    bingo_html = '<div class="bingo-grid">'
+    
+    # Add header row
+    bingo_html += '<div class="bingo-header">'
+    for i in range(7):
+        bingo_html += f'<div>Column {i+1}</div>'
+    bingo_html += '</div>'
+
+    # Add the 7x7 grid of text inputs
+    for i in range(7):  # 7 rows
+        for j in range(7):  # 7 columns
+            question = bingo_board[i][j]  # Get the question for this cell
+            bingo_html += f'<div class="bingo-cell">'
+            bingo_html += f'<input type="text" id="q{i}{j}" placeholder="{question}" value="{st.session_state.answers[i][j]}">'
+            bingo_html += f'<p>{"✔️ Answered" if st.session_state.answers[i][j] else "❓ Not Answered"}</p>'
+            bingo_html += '</div>'
+
+    bingo_html += '</div>'
+
+    # Render the bingo grid
+    st.markdown(bingo_html, unsafe_allow_html=True)
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
