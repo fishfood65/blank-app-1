@@ -38,24 +38,29 @@ def create_bingo_board():
         cols = st.columns(7, border=True)  # Create 7 columns per row
         for col_index in range(7):  # 7 columns per row
             question = bingo_board[row_index][col_index]  # Get the correct question from the list
-            answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
 
             # Create the layout for each column
             with cols[col_index]:
                 # Create an expander for each question in the column
                 with st.expander(f"{question}"):  # Label is just the question
                     # Display the question and allow the user to input the answer
-                    answer_input = st.text_area(
+                    answer = st.text_area(
                         "Answer Here", 
                         key=f"q{col_index}{row_index}", 
-                        value=answer,
+                        value=st.session_state.answers[col_index][row_index],
                         placeholder="Enter your answer here",
                         label_visibility="collapsed"
                     )
 
                     # Store the answer in session state if it changes
-                    if answer_input != answer:
-                        st.session_state.answers[row_index][col_index] = answer_input
+                    if answer != st.session_state.answers[col_index][row_index]:
+                        st.session_state.answers[col_index][row_index] = answer
+
+                    # Display whether the question has been answered
+                    if answer:
+                        st.write("✔️ Answered")
+                    else:
+                        st.write("❓ Not Answered")
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
