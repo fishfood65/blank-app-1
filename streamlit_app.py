@@ -1,6 +1,7 @@
 import streamlit as st
 import csv
 import io
+import pandas as pd
 
 # List of updated questions (remove the first 7 questions, starting from the 8th question)
 questions = [
@@ -21,28 +22,38 @@ if 'questions' not in st.session_state:
 if 'answers' not in st.session_state:
     st.session_state.answers = [['' for _ in range(7)] for _ in range(7)]  # 7 rows x 7 columns
 
-# Function to create the bingo board with text inputs
+# Function to create the bingo board with text inputs and a header row
 def create_bingo_board():
     # Create an empty board (7x7)
     bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
-    # Create the bingo grid
+    # Define the header for the bingo board (could be "B", "I", "N", "G", "O", etc.)
+    header = ['B', 'I', 'N', 'G', 'O', 'X', 'Y']
+
+    # Prepare the data to populate the table (7x7 grid of answers)
+    table_data = []
+
+    # Fill the table data with text input elements for answers
     for i in range(7):  # 7 rows
-        cols = st.columns(7)  # Create 7 columns for each row
+        row = []
         for j in range(7):  # 7 columns in each row
             question = bingo_board[i][j]  # Get the question for this cell
-            with cols[j]:
-                # Use a text input to capture the answer for each question
-                answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
-                # Store the answer in session state if it changes
-                if answer != st.session_state.answers[i][j]:
-                    st.session_state.answers[i][j] = answer
+            # Use a text input to capture the answer for each question
+            answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
+            
+            # Store the answer in session state if it changes
+            if answer != st.session_state.answers[i][j]:
+                st.session_state.answers[i][j] = answer
+            
+            # Append the answer to the row
+            row.append(answer)
+        table_data.append(row)
 
-                # Display whether the question has been answered
-                if answer:
-                    st.write("✔️ Answered")
-                else:
-                    st.write("❓ Not Answered")
+    # Create a Pandas DataFrame to display the bingo board as a table
+    df_bingo = pd.DataFrame(table_data, columns=header)
+
+    # Display the table
+    st.write("### Bingo Board", df_bingo)
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
