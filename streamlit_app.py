@@ -33,51 +33,6 @@ def create_bingo_board():
     # Create an empty board (7x7)
     bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
-    # Adding custom CSS for grid layout and styling
-    st.markdown("""
-        <style>
-        .bingo-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            border: 2px solid #000;
-            padding: 10px;
-        }
-        .bingo-cell {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-        }
-        .bingo-cell input {
-            width: 100%;
-        }
-        .bingo-header {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            background-color: #2e3b4e;
-            color: white;
-            font-weight: bold;
-            padding: 10px;
-        }
-        .bingo-header div {
-            padding: 5px;
-            text-align: center;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-    # Create the bingo grid with a header row
-    bingo_html = '<div class="bingo-grid">'
-    
-    # Add header row
-    bingo_html += '<div class="bingo-header">'
-    for i in range(7):
-        bingo_html += f'<div>Column {i+1}</div>'
-    bingo_html += '</div>'
-
     # Add the 7x7 grid of text inputs
     for i in range(7):  # 7 rows
         for j in range(7):  # 7 columns
