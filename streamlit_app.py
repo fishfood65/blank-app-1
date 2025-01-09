@@ -35,7 +35,7 @@ def create_bingo_board():
 
     # Create a container for the whole bingo board
     for row_index in range(7):  # There are 7 rows
-        cols = st.columns(7)  # Create 7 columns per row
+        cols = st.columns(7, border=True)  # Create 7 columns per row
         for col_index in range(7):  # 7 columns per row
             question = bingo_board[row_index][col_index]  # Get the correct question from the list
             answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
