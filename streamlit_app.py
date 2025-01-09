@@ -36,9 +36,10 @@ def create_bingo_board():
     # Create 7 columns for the grid
     cols = st.columns(7)  # Create 7 columns
     
-    # Loop through each column and row to populate the board
+    # Create a container to ensure the grid height is uniform
     for row_index in range(7):  # Loop through 7 rows
-        with st.container():  # Create a container for each row
+        with st.container(height=240):  # Create a container for each row
+            # Create a container for each column within the row to make sure all columns in the row are the same height
             for col_index in range(7):  # Loop through 7 columns in each row
                 question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
                 answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
