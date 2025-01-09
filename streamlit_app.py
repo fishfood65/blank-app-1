@@ -2,7 +2,7 @@ import streamlit as st
 import csv
 import io
 
-# List of updated questions (49 total questions)
+# List of updated questions
 questions = [
     "🐕 Dog's Name", "🏥 Vet Contact Info (Name, Phone Number, Address)", "🥣 Describe the brand/type of food your dog eats", 
     "🧳 Walk Routine (Time, Duration, Location, Behavior)", "🛁 Bathing Schedule", "🧸 Favorite Toys", "🎯 Current Training Goals",
@@ -33,33 +33,29 @@ def create_bingo_board():
     # Create an empty board (7x7)
     bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
-    # Use Streamlit columns to create a grid with 7 columns
-    cols = st.columns(7)  # 7 columns in the grid
+    # Create a container for the whole bingo board
+    for row_index in range(7):  # There are 7 rows
+        cols = st.columns(7)  # Create 7 columns per row
+        for col_index in range(7):  # 7 columns per row
+            question = bingo_board[row_index][col_index]  # Get the correct question from the list
+            answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
 
-    # Create a container for the whole bingo board to ensure the height is consistent
-    with st.container():
-        for col_index, col in enumerate(cols):
-            # Each column will contain one question from each row in that column
-            with col:
-                # For each column, iterate through the rows to assign a question per row
-                for row_index in range(7):
-                    question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
-                    answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
+            # Create the layout for each column
+            with cols[col_index]:
+                # Create an expander for each question in the column
+                with st.expander(f"{question}"):  # Label is just the question
+                    # Display the question and allow the user to input the answer
+                    answer_input = st.text_input(
+                        "Answer Here", 
+                        key=f"q{col_index}{row_index}", 
+                        value=answer,
+                        placeholder="Enter your answer here",
+                        label_visibility="collapsed"
+                    )
 
-                    # Create an expander for each question
-                    with st.expander(f"{question}"):  # Use the question as the label
-                        # Display the question and allow the user to input the answer
-                        answer_input = st.text_input(
-                            "Answer Here", 
-                            key=f"q{col_index}{row_index}", 
-                            value=answer,
-                            placeholder="Enter your answer here",
-                            label_visibility="collapsed"
-                        )
-
-                        # Store the answer in session state if it changes
-                        if answer_input != answer:
-                            st.session_state.answers[row_index][col_index] = answer_input
+                    # Store the answer in session state if it changes
+                    if answer_input != answer:
+                        st.session_state.answers[row_index][col_index] = answer_input
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
