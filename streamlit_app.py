@@ -36,30 +36,34 @@ def create_bingo_board():
     # Use Streamlit columns to create a grid with 7 columns
     cols = st.columns(7)  # 7 columns in the grid
 
-    for col_index, col in enumerate(cols):
-        # Each column will contain one question from each row in that column
-        with col:
-            for row_index in range(7):
-                question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
-                answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
+    # Create a container for the whole bingo board to ensure the height is consistent
+    with st.container():
+        for col_index, col in enumerate(cols):
+            # Each column will contain one question from each row in that column
+            with col:
+                # Create a container for each column to control layout
+                with st.container():
+                    for row_index in range(7):
+                        question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
+                        answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
 
-                # Determine the status based on whether the answer is provided
-                answer_status = "✔️" if answer else "❓"
+                        # Determine the status based on whether the answer is provided
+                        answer_status = "✔️" if answer else "❓"
 
-                # Create an expander with the question as the label
-                with st.expander(f"{answer_status} {question}"):  # Use the question and answer status as the expander label
-                    # Display the question and allow the user to input the answer
-                    answer_input = st.text_input(
-                        "Answer Here", 
-                        key=f"q{col_index}{row_index}", 
-                        value=answer,
-                        placeholder="Enter your answer here",
-                        label_visibility="collapsed"
-                    )
+                        # Create an expander with the question as the label
+                        with st.expander(f"{answer_status} {question}"):  # Use the question and answer status as the expander label
+                            # Display the question and allow the user to input the answer
+                            answer_input = st.text_input(
+                                "Answer Here", 
+                                key=f"q{col_index}{row_index}", 
+                                value=answer,
+                                placeholder="Enter your answer here",
+                                label_visibility="collapsed"
+                            )
 
-                    # Store the answer in session state if it changes
-                    if answer_input != answer:
-                        st.session_state.answers[row_index][col_index] = answer_input
+                            # Store the answer in session state if it changes
+                            if answer_input != answer:
+                                st.session_state.answers[row_index][col_index] = answer_input
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
@@ -121,7 +125,7 @@ def export_csv_button():
     )
 
 # Title and description
-st.title("Essential Dog Care Quiz - Bingo Board")
+st.title("Essential Dog Care Bingo Board")
 st.write("Complete the bingo board by answering questions about your dog's care. "
          "Enter your responses in the boxes below.")
 
