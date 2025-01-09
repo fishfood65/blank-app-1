@@ -35,21 +35,22 @@ def create_bingo_board():
 
     # Add the 7x7 grid of text inputs
     for i in range(7):  # 7 rows
-        cols = st.columns(7, vertical_alignment="center", border=True)  # Create 7 columns for each row
-        for j in range(7):  # 7 columns in each row
-            question = bingo_board[i][j]  # Get the question for this cell
-            with cols[j]:  # Put the input field in the corresponding column
-                # Use a text input to capture the answer for each question
-                answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
-                # Store the answer in session state if it changes
-                if answer != st.session_state.answers[i][j]:
-                    st.session_state.answers[i][j] = answer
+        with st.container():  # Create a container to group the row
+            cols = st.columns(7)  # Create 7 columns for each row
+            for j in range(7):  # 7 columns in each row
+                question = bingo_board[i][j]  # Get the question for this cell
+                with cols[j]:  # Put the input field in the corresponding column
+                    # Use a text input to capture the answer for each question
+                    answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
+                    # Store the answer in session state if it changes
+                    if answer != st.session_state.answers[i][j]:
+                        st.session_state.answers[i][j] = answer
 
-                # Display whether the question has been answered
-                if answer:
-                    st.write("✔️ Answered")
-                else:
-                    st.write("❓ Not Answered")
+                    # Display whether the question has been answered
+                    if answer:
+                        st.write("✔️ Answered")
+                    else:
+                        st.write("❓ Not Answered")
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
