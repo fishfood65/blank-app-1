@@ -42,7 +42,7 @@ def create_bingo_board():
             # Each column will contain one question from each row in that column
             with col:
                 # Create a container for each column to control layout
-                with st.container():
+                with st.container(height=120):
                     for row_index in range(7):
                         question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
                         answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
@@ -50,7 +50,7 @@ def create_bingo_board():
                         # Create an expander with the question as the label (no answer status in label)
                         with st.expander(f"{question}"):  # Only the question in the expander label
                             # Display the question and allow the user to input the answer
-                            answer_input = st.text_input(
+                            answer_input = st.text_area(
                                 "Answer Here", 
                                 key=f"q{col_index}{row_index}", 
                                 value=answer,
