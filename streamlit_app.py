@@ -38,19 +38,19 @@ def create_bingo_board():
 
     # Create a container for the whole bingo board to ensure the height is consistent
     with st.container():
-        for col_index, col in enumerate(cols):
-            # Each column will contain one question from each row in that column
-            with col:
-                # Create a container for each column to control layout
-                with st.container():
-                    for row_index in range(7):
-                        question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
-                        answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
+        for row_index in range(7):
+            # Create a container for each row
+            with st.container():
+                for col_index in range(7):
+                    question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
+                    answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
 
+                    # Create a container for each column within the row for better control
+                    with cols[col_index]:
                         # Create an expander with the question as the label (no answer status in label)
                         with st.expander(f"{question}"):  # Only the question in the expander label
                             # Display the question and allow the user to input the answer
-                            answer_input = st.text_area(
+                            answer_input = st.text_input(
                                 "Answer Here", 
                                 key=f"q{col_index}{row_index}", 
                                 value=answer,
