@@ -47,7 +47,7 @@ def create_bingo_board():
                 answer_status = "✔️" if answer else "❓"
 
                 # Create an expander with the question as the label
-                with st.expander(f"{answer_status} - {question}"):  # Use the question and answer status as the expander label
+                with st.expander(f"{answer_status} {question}"):  # Use the question and answer status as the expander label
                     # Display the question and allow the user to input the answer
                     answer_input = st.text_input(
                         "Answer Here", 
