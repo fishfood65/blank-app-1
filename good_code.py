@@ -56,7 +56,12 @@ def create_bingo_board():
                         placeholder="Enter your answer here",
                         label_visibility="collapsed"
                     )
-
+                # Determine the answer status based on whether the answer is empty or filled
+                    answer_status = "✔️" if answer_input else "❓"
+                    
+                    # Display the answer status after the text input
+                    if answer_input:
+                        st.write(f"Answer status: {answer_status}")
                     # Store the answer in session state if it changes
                     if answer_input != answer:
                         st.session_state.answers[row_index][col_index] = answer_input
