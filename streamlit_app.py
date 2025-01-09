@@ -42,24 +42,10 @@ def create_bingo_board():
 
             # Create the layout for each column
             with cols[col_index]:
-                # Add custom CSS to remove borders for the expander
-                st.markdown(
-                    """
-                    <style>
-                    .streamlit-expanderHeader {
-                        border: none !important;
-                        background-color: transparent !important;
-                        font-size: 16px !important;
-                    }
-                    .streamlit-expanderContent {
-                        padding: 0px !important;
-                    }
-                    </style>
-                    """, unsafe_allow_html=True)
                 # Create an expander for each question in the column
                 with st.expander(f"{question}"):  # Label is just the question
                     # Display the question and allow the user to input the answer
-                    answer_input = st.text_input(
+                    answer_input = st.text_area(
                         "Answer Here", 
                         key=f"q{col_index}{row_index}", 
                         value=answer,
