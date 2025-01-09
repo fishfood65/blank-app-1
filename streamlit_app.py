@@ -29,27 +29,24 @@ if 'answers' not in st.session_state:
     st.session_state.answers = [['' for _ in range(7)] for _ in range(7)]  # 7 rows x 7 columns
 
 # Function to create the bingo board with text inputs
-def create_bingo_board():
-    # Create an empty board (7x7)
-    bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
+# Loop through each row and create an expander for it
+    for i in range(7):
+        with st.expander(f"Row {i+1} - Expand to Answer"):  # Create an expander for each row
+            cols = st.columns(7)  # Create 7 columns for each row
+            for j in range(7):
+                question = bingo_board[i][j]  # Get the question for this cell
+                with cols[j]:  # Place the input field in the corresponding column
+                    # Use a text input to capture the answer for each question
+                    answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
+                    # Store the answer in session state if it changes
+                    if answer != st.session_state.answers[i][j]:
+                        st.session_state.answers[i][j] = answer
 
-    # Add the 7x7 grid of text inputs
-    for i in range(7):  # 7 rows
-        cols = st.columns(7)  # Create 7 columns for each row
-        for j in range(7):  # 7 columns in each row
-            question = bingo_board[i][j]  # Get the question for this cell
-            with cols[j]:  # Put the input field in the corresponding column
-                # Use a text input to capture the answer for each question
-                answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
-                # Store the answer in session state if it changes
-                if answer != st.session_state.answers[i][j]:
-                    st.session_state.answers[i][j] = answer
-
-                # Display whether the question has been answered
-                if answer:
-                    st.write("✔️ Answered")
-                else:
-                    st.write("❓ Not Answered")
+                    # Display whether the question has been answered
+                    if answer:
+                        st.write("✔️ Answered")
+                    else:
+                        st.write("❓ Not Answered")
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
