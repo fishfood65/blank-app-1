@@ -35,7 +35,7 @@ def create_bingo_board():
 
     # Add the 7x7 grid of text inputs
     for i in range(7):  # 7 rows
-        cols = st.columns(7)  # Create 7 columns for each row
+        cols = st.columns(7, vertical_alignment="center", border=True)  # Create 7 columns for each row
         for j in range(7):  # 7 columns in each row
             question = bingo_board[i][j]  # Get the question for this cell
             with cols[j]:  # Put the input field in the corresponding column
