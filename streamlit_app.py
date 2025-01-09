@@ -78,18 +78,23 @@ def check_bingo(answers):
     
     return False
 
-# Function to export answers to CSV
+# Function to export answers to CSV with questions and corresponding answers
 def export_csv_button():
     # Prepare the CSV data
     output = io.StringIO()
     writer = csv.writer(output)
-    
-    # Write the header (questions) in the first row
-    writer.writerow(st.session_state.questions)
-    
-    # Write the answers starting from the second row
-    for row in st.session_state.answers:
-        writer.writerow(row)    
+
+    # Write the header row (questions as the first column)
+    writer.writerow(["Question", "Answer"])
+
+    # Write each question and its corresponding answer in the rows
+    for i in range(5):  # 5 rows
+        for j in range(5):  # 5 columns
+            question = st.session_state.questions[i * 5 + j]  # Get the correct question from the list
+            answer = st.session_state.answers[i][j]  # Get the corresponding answer
+
+            # Write the question and its corresponding answer
+            writer.writerow([question, answer])
     
     # Move to the beginning of the StringIO buffer
     output.seek(0)
