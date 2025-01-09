@@ -29,9 +29,9 @@ if 'answers' not in st.session_state:
     st.session_state.answers = [['' for _ in range(7)] for _ in range(7)]  # 7 rows x 7 columns
 
 # Function to create the bingo board with text inputs
- def create_bingo_board():
-    # Create an empty board (7x7) from the questions list
-    bingo_board = [questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
+def create_bingo_board():
+    # Create an empty board (7x7)
+    bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
     # Loop through each column (7 total)
     for i in range(7):
