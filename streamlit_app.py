@@ -27,13 +27,19 @@ def create_bingo_board():
 
     bingo_completed = False
 
-    # Create the bingo board in a simple list format without grid styling
-    for i in range(5):
+    # First, display the header row with questions, no input fields
+    cols = st.columns(5)  # Create 5 columns for the header
+    for j in range(5):
+        with cols[j]:
+            st.write(f"**{bingo_board[0][j]}**")  # Display question as header, no input field
+
+    # Now create the remaining rows with input fields
+    for i in range(1, 5):  # Start from row 1 (the second row, since row 0 is the header)
         cols = st.columns(5)  # Create 5 columns for each row of the board
         for j in range(5):
             question = bingo_board[i][j]
             with cols[j]:
-                # Use a text input to capture the answer for each question
+                # Use a text input to capture the answer for each question (only for non-header rows)
                 answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
                 # Store the answer in session state
                 if answer != st.session_state.answers[i][j]:
