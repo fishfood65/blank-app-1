@@ -33,23 +33,33 @@ def create_bingo_board():
     # Create an empty board (7x7)
     bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
-    # Add the 7x7 grid of text inputs
-    for i in range(7):  # 7 rows
-        cols = st.columns(7)  # Create 7 columns for each row
-        for j in range(7):  # 7 columns in each row
-            question = bingo_board[i][j]  # Get the question for this cell
-            with cols[j]:  # Put the input field in the corresponding column
-                # Use a text input to capture the answer for each question
-                answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
-                # Store the answer in session state if it changes
-                if answer != st.session_state.answers[i][j]:
-                    st.session_state.answers[i][j] = answer
+    # Use Streamlit columns to create a grid with 7 columns
+    cols = st.columns(7)  # 7 columns in the grid
 
-                # Display whether the question has been answered
-                if answer:
-                    st.write("✔️ Answered")
-                else:
-                    st.write("❓ Not Answered")
+    for col_index, col in enumerate(cols):
+        # Each column will contain one question from each row in that column
+        with col:
+            for row_index in range(7):
+                question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
+                answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
+
+                # Determine the status based on whether the answer is provided
+                answer_status = "✔️" if answer else "❓"
+
+                # Create an expander with the question as the label
+                with st.expander(f"{answer_status} {question}"):  # Use the question and answer status as the expander label
+                    # Display the question and allow the user to input the answer
+                    answer_input = st.text_input(
+                        "Answer Here", 
+                        key=f"q{col_index}{row_index}", 
+                        value=answer,
+                        placeholder="Enter your answer here",
+                        label_visibility="collapsed"
+                    )
+
+                    # Store the answer in session state if it changes
+                    if answer_input != answer:
+                        st.session_state.answers[row_index][col_index] = answer_input
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
