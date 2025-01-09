@@ -42,7 +42,7 @@ def create_bingo_board():
             # Create the layout for each column
             with cols[col_index]:
                 # Create an expander for each question in the column
-                with st.expander(f"{question}"):  # Label is just the question
+                with st.expander(f"{answer}"{question}"):  # Label is just the question
                     # Display the question and allow the user to input the answer
                     answer = st.text_area(
                         "Answer Here", 
