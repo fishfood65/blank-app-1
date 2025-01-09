@@ -27,33 +27,4 @@ def create_bingo_board():
     # Create an empty board (7x7)
     bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
-    # Define the header for the bingo board (could be "B", "I", "N", "G", "O", etc.)
-    header = ['B', 'I', 'N', 'G', 'O', 'X', 'Y']
-
-    # Prepare the data to populate the table (7x7 grid of answers)
-    table_data = []
-
-    # Fill the table data with text input elements for answers
-    for i in range(7):  # 7 rows
-        row = []
-        for j in range(7):  # 7 columns in each row
-            question = bingo_board[i][j]  # Get the question for this cell
-            # Create a label showing the question and a text input to capture the answer
-            with st.beta_expander(question, expanded=False):  # Makes it collapsible
-                answer = st.text_input("Your Answer", key=f"q{i}{j}", value=st.session_state.answers[i][j])
-                
-                # Store the answer in session state if it changes
-                if answer != st.session_state.answers[i][j]:
-                    st.session_state.answers[i][j] = answer
-                
-                # Append the answer to the row (for creating the table later)
-                row.append(f"{question}: {answer}")
-        table_data.append(row)
-
-    # Create a Pandas DataFrame to display the bingo board as a table
-    df_bingo = pd.DataFrame(table_data, columns=header)
-
-    # Display the table
-    st.write("### Bingo Board", df_bingo)
-
-    # After each user input, check for Bingo (row, colum
+    # Define the header for
