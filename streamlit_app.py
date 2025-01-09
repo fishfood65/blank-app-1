@@ -47,11 +47,8 @@ def create_bingo_board():
                         question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
                         answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
 
-                        # Determine the status based on whether the answer is provided
-                        answer_status = "✔️" if answer else "❓"
-
-                        # Create an expander with the question as the label
-                        with st.expander(f"{answer_status} {question}"):  # Use the question and answer status as the expander label
+                        # Create an expander with the question as the label (no answer status in label)
+                        with st.expander(f"{question}"):  # Only the question in the expander label
                             # Display the question and allow the user to input the answer
                             answer_input = st.text_input(
                                 "Answer Here", 
@@ -64,6 +61,12 @@ def create_bingo_board():
                             # Store the answer in session state if it changes
                             if answer_input != answer:
                                 st.session_state.answers[row_index][col_index] = answer_input
+
+                            # Show the answer status after the text input if it's not empty
+                            if answer_input:
+                                st.write("✔️ Answered")
+                            else:
+                                st.write("❓ Not Answered")
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
