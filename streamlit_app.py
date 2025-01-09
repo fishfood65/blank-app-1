@@ -35,9 +35,10 @@ def create_bingo_board():
 
     # Add the 7x7 grid of text inputs
     for i in range(7):  # 7 rows
-        for j in range(7):  # 7 columns
+        cols = st.columns(7)  # Create 7 columns for each row
+        for j in range(7):  # 7 columns in each row
             question = bingo_board[i][j]  # Get the question for this cell
-            with cols[j]:
+            with cols[j]:  # Put the input field in the corresponding column
                 # Use a text input to capture the answer for each question
                 answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[i][j])
                 # Store the answer in session state if it changes
