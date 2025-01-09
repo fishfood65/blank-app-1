@@ -35,12 +35,12 @@ def create_bingo_board():
 
     # Loop through each column (7 total)
     for i in range(7):
-        with st.expander(f"Column {i+1} - Expand to Answer"):  # Create an expander for each column
-            # Loop through each row in this column
-            for j in range(7):
-                question = bingo_board[j][i]  # Get the question for this cell
+        # Create an expander for each question and label it with the question itself
+        for j in range(7):
+            question = bingo_board[j][i]  # Get the question for this cell
+            with st.expander(question):  # Use the question as the expander label
                 # Display the question and allow the user to input the answer
-                answer = st.text_input(question, key=f"q{i}{j}", value=st.session_state.answers[j][i])
+                answer = st.text_input(f"Answer for: {question}", key=f"q{i}{j}", value=st.session_state.answers[j][i])
                 # Store the answer in session state if it changes
                 if answer != st.session_state.answers[j][i]:
                     st.session_state.answers[j][i] = answer
