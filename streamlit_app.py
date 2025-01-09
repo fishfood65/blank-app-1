@@ -33,24 +33,27 @@ def create_bingo_board():
     # Create an empty board (7x7)
     bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
-    # Loop through each column (7 total)
-    for i in range(7):
-        # Create an expander for each question and label it with the question itself
-        for j in range(7):
-            question = bingo_board[j][i]  # Get the question for this cell
-            with st.expander(question):  # Use the question as the expander label
+    # Use Streamlit columns to create a grid with 7 columns
+    cols = st.columns(7)  # 7 columns in the grid
+
+    # Loop through each of the 7 columns
+    for col_index, col in enumerate(cols):
+        # Each column will contain one question from each row in that column
+        with col:
+            for row_index in range(7):
+                question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
                 # Display the question and allow the user to input the answer
-                answer = st.text_input(f"Answer for: {question}", key=f"q{i}{j}", value=st.session_state.answers[j][i])
+                answer = st.text_input(f"Answer for: {question}", key=f"q{col_index}{row_index}", value=st.session_state.answers[row_index][col_index])
                 # Store the answer in session state if it changes
-                if answer != st.session_state.answers[j][i]:
-                    st.session_state.answers[j][i] = answer
+                if answer != st.session_state.answers[row_index][col_index]:
+                    st.session_state.answers[row_index][col_index] = answer
 
                 # Display whether the question has been answered
                 if answer:
                     st.write("✔️ Answered")
                 else:
                     st.write("❓ Not Answered")
-
+                    
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
 
