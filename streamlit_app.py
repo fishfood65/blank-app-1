@@ -43,7 +43,7 @@ def create_bingo_board():
                 question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
 
                 # Create an expander with the question as the label
-                with st.expander(f"{{question}"):  # Use the question and answer status as the expander label
+                with st.expander(f"{question}"):  # Use the question and answer status as the expander label
                     # Display the question and allow the user to input the answer
                     answer = st.text_area(
                         "Answer Here", 
