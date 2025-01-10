@@ -24,39 +24,47 @@ questions = [
 if 'questions' not in st.session_state:
     st.session_state.questions = questions
 
+# Initialize the session state for answers (Now 7 rows x 7 columns)
+if 'answers' not in st.session_state:
+    st.session_state.answers = [['' for _ in range(7)] for _ in range(7)]  # 7 rows x 7 columns
+
 # Function to create the bingo board with text inputs
 def create_bingo_board():
     # Create an empty board (7x7)
     bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
-    # Create a container for the whole bingo board
-    for row_index in range(7):  # There are 7 rows
-        cols = st.columns(7, border=True)  # Create 7 columns per row
-        for col_index in range(7):  # 7 columns per row
-            question = bingo_board[row_index][col_index]  # Get the correct question from the list
+    # Use Streamlit columns to create a grid with 7 columns
+    cols = st.columns(7)  # 7 columns in the grid
 
-            # Create the layout for each column
-            with cols[col_index]:
-                # Create an expander for each question in the column
-                with st.expander(f"{question}"):  # Label is just the question
+    for col_index, col in enumerate(cols):
+        # Each column will contain one question from each row in that column
+        with col:
+            for row_index in range(7):
+                question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
+                answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
+
+                # Determine the status based on whether the answer is provided
+                answer_status = "✔️" if answer else "❓"
+
+                # Create an expander with the question as the label
+                with st.expander(f"{answer_status} {question}"):  # Use the question and answer status as the expander label
                     # Display the question and allow the user to input the answer
-                    answer = st.text_area(
+                    answer_input = st.text_input(
                         "Answer Here", 
                         key=f"q{col_index}{row_index}", 
-                        value=st.session_state.answers[col_index][row_index],
+                        value=answer,
                         placeholder="Enter your answer here",
                         label_visibility="collapsed"
                     )
-
+                # Determine the answer status based on whether the answer is empty or filled
+                    answer_status = "✔️" if answer_input else "❓"
+                    
+                    # Display the answer status after the text input
+                    if answer_input:
+                        st.write(f"Answer status: {answer_status}")
                     # Store the answer in session state if it changes
-                    if answer != st.session_state.answers[col_index][row_index]:
-                        st.session_state.answers[col_index][row_index] = answer
-
-                    # Display whether the question has been answered
-                    if answer:
-                        st.write("✔️ Answered")
-                    else:
-                        st.write("❓ Not Answered")
+                    if answer_input != answer:
+                        st.session_state.answers[row_index][col_index] = answer_input
 
     # After each user input, check for Bingo (row, column, or diagonal completion)
     bingo_completed = check_bingo(st.session_state.answers)
@@ -118,7 +126,7 @@ def export_csv_button():
     )
 
 # Title and description
-st.title("Essential Dog Care Bingo Board")
+st.title("Essential Dog Care Quiz - Bingo Board")
 st.write("Complete the bingo board by answering questions about your dog's care. "
          "Enter your responses in the boxes below.")
 
