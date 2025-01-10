@@ -24,6 +24,10 @@ questions = [
 if 'questions' not in st.session_state:
     st.session_state.questions = questions
 
+# Initialize the session state for answers (Now 7 rows x 7 columns)
+if 'answers' not in st.session_state:
+    st.session_state.answers = [['' for _ in range(7)] for _ in range(7)]  # 7 rows x 7 columns
+
 # Function to create the bingo board with text inputs
 def create_bingo_board():
     # Create an empty board (7x7)
@@ -37,6 +41,7 @@ def create_bingo_board():
         with col:
             for row_index in range(7):
                 question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
+                answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
 
                 # Create an expander with the question as the label
                 with st.expander(f"{question}"):  # Use the question and answer status as the expander label
