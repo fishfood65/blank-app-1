@@ -40,15 +40,15 @@ def create_bingo_board():
         # Each column will contain one question from each row in that column
    #     with col:
     for row_index in range(7): # There are 7 rows
-        cols = st.columns(7) # Create 7 columns per row
+        cols = st.columns(7, border=True) # Create 7 columns per row
         for col_index in range(7): # 7 columns per row
             question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
             answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
 
-        # Create an expander with the question as the label
-        with cols[col_index]:
+            # Create an expander with the question as the label
+            with cols[col_index]:
             # Create an expander for each question in the column
-            with st.expander(f"{question}"):  # Use the question and answer status as the expander label
+                with st.expander(f"{question}"):  # Use the question and answer status as the expander label
                     # Display the question and allow the user to input the answer
                     answer = st.text_area(
                         "Answer Here", 
