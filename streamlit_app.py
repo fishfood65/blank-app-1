@@ -41,7 +41,7 @@ def create_bingo_board():
         with col:
             for row_index in range(7):
                 question = bingo_board[row_index][col_index]  # Get the question for this column-row pair
-                answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
+                # answer = st.session_state.answers[row_index][col_index]  # Get the current answer for this question
 
                 # Create an expander with the question as the label
                 with st.expander(f"{question}"):  # Use the question and answer status as the expander label
