@@ -34,7 +34,7 @@ def create_bingo_board():
     bingo_board = [st.session_state.questions[i:i + 7] for i in range(0, 49, 7)]  # 49 questions, 7 per row
 
     # Use Streamlit columns to create a grid with 7 columns
-    cols = st.columns(7)  # 7 columns in the grid
+    cols = st.columns(7, border=True)  # 7 columns in the grid
 
     for col_index, col in enumerate(cols):
         # Each column will contain one question from each row in that column
